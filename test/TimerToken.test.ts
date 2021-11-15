@@ -25,7 +25,7 @@ const twoDaysAgo = NOW - TWO_DAYS; // 1636779600;
 const twoDaysFromNow = NOW + TWO_DAYS; // 1637125200;
 let TIMERTOKEN_OWNER_ADDRESS: string;
 
-const SEND_ETHER_AMOUNT = "1";
+const SEND_ETHER_AMOUNT = 1;
 const EXPECTED_RETURN_VALUE = "1.0";
 
 // beforeEach(async () => {});
@@ -90,7 +90,7 @@ describe("TimerToken && Contribute", () => {
     const tx = {
       from: ETH_DONATOR_ACCOUNT,
       to: contributeAddress,
-      value: ethers.utils.parseEther(SEND_ETHER_AMOUNT),
+      value: ethers.utils.parseEther(SEND_ETHER_AMOUNT.toString()),
     };
 
     const receipt = await wallet.sendTransaction(tx);
@@ -116,18 +116,23 @@ describe("TimerToken && Contribute", () => {
   it("approve token transfer", async () => {
     const [owner] = await ethers.getSigners();
     const result = await contractA.approve(
-      TIMERTOKEN_OWNER_ADDRESS,
-      SEND_ETHER_AMOUNT
+      TIMERTOKEN_OWNER_ADDRESS, // spender
+      SEND_ETHER_AMOUNT // amount
     );
-    // console.log("result: " + JSON.stringify(result));
+    expect(result.hash);
+    // const erc20Balance = await contractA.balanceOf(ETH_DONATOR_ACCOUNT);
+    // console.log("erc20Balance: " + erc20Balance.toNumber());
   });
 
   it("transfer one token for one eth donated", async () => {
     const result = await contractA.transferFrom(
-      TIMERTOKEN_OWNER_ADDRESS,
-      ETH_DONATOR_ACCOUNT,
-      SEND_ETHER_AMOUNT
+      TIMERTOKEN_OWNER_ADDRESS, // sender
+      ETH_DONATOR_ACCOUNT, // recipient
+      SEND_ETHER_AMOUNT // amount
     );
-    // console.log("result: " + JSON.stringify(result));
+
+    const erc20Balance = await contractA.balanceOf(ETH_DONATOR_ACCOUNT);
+    expect(erc20Balance).equal(SEND_ETHER_AMOUNT);
+    // console.log("erc20Balance: " + erc20Balance.toNumber());
   });
 });
