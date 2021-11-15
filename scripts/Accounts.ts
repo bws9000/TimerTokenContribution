@@ -1,7 +1,7 @@
 export namespace Accounts {
   interface IAccount {
-    address: number | undefined;
-    privateKey: number | undefined;
+    address: string | "";
+    privateKey: string | "";
   }
 
   export const one = <IAccount>{

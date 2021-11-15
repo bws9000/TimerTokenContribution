@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "hardhat/console.sol"; //almost feels like cheating...
 
-// Example class - a mock class using delivering from ERC20
 contract TimerToken is ERC20 {
     uint256 startTime;
     uint256 endTime;
@@ -17,11 +16,16 @@ contract TimerToken is ERC20 {
         startTime = _startTime;
         endTime = _endTime;
 
-        console.log("msg.sender: ", msg.sender);
-        console.log("startTime: ", startTime);
-        console.log("endTime: ", endTime);
+        // console.log("msg.sender: ", msg.sender);
+        // console.log("startTime: ", startTime);
+        // console.log("endTime: ", endTime);
 
         _mint(msg.sender, initialBalance);
+        transferToken(0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC);
+    }
+
+    function transferToken(address to) internal {
+        transfer(to, 1000);
     }
 
     /**
@@ -44,8 +48,9 @@ contract TimerToken is ERC20 {
         uint256 amount
     ) internal virtual override {
         uint256 rightNow = block.timestamp;
+        //console.log("contract timestamp", rightNow);
         require(
-            rightNow < endTime && startTime > rightNow,
+            rightNow < endTime && rightNow > startTime,
             "TimerToken: You can't do this right now."
         );
         super._beforeTokenTransfer(from, to, amount);

@@ -22,6 +22,19 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
+task(
+  "balances",
+  "Prints the list of account balances",
+  async (taskArgs, hre) => {
+    const accounts = await hre.ethers.getSigners();
+
+    for (const account of accounts) {
+      const balance = await hre.ethers.provider.getBalance(account.address);
+      console.log(account.address, "has balance", balance.toString());
+    }
+  }
+);
+
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
   networks: {
